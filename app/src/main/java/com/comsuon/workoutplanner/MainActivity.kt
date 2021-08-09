@@ -3,6 +3,7 @@ package com.comsuon.workoutplanner
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +13,9 @@ import com.comsuon.workoutplanner.navigation.Screens
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.view.Editor
 import com.comsuon.workoutplanner.view.Home
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +34,7 @@ class MainActivity : ComponentActivity() {
                         Home(navController = navController)
                     }
                     composable(route = Screens.Editor.name) {
-                        Editor(navController = navController, viewModel = viewModel())
+                        Editor(navController = navController, viewModel = hiltViewModel())
                     }
                     composable(route = Screens.Player.name) {}
                 }

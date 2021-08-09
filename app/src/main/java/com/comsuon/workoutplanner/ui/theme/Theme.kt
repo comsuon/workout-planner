@@ -2,9 +2,15 @@ package com.comsuon.workoutplanner.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 private val DarkColorPalette = darkColors(
     primary = Primary,
@@ -47,3 +53,20 @@ fun WorkoutPlannerTheme(
         content = content
     )
 }
+
+val tfTextStyle by lazy {
+    TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        fontFamily = FontFamily.SansSerif,
+    )
+}
+
+@Composable
+fun tfColors() = TextFieldDefaults.textFieldColors(
+    textColor = Color.White,
+    backgroundColor = MaterialTheme.colors.primaryVariant,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    disabledIndicatorColor = Color.Transparent
+)

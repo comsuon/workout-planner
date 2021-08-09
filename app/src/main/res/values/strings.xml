@@ -2,4 +2,6 @@
     <string name="app_name">Workout Planner</string>
     <string name="title_workout_list">Workout List</string>
     <string name="btn_new_workout">New workout</string>
+    <string name="btn_save_workout">Save</string>
+    <string name="tf_hint_workout_name">Workout name</string>
 </resources>

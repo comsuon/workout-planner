@@ -31,7 +31,6 @@ fun Home(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxSize()
                 .background(color = MaterialTheme.colors.primaryVariant)
         ) {
             Column(

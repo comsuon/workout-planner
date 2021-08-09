@@ -7,7 +7,11 @@ import com.comsuon.workoutplanner.repository.db.entities.ExerciseEntity
 import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
 import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
 
-@Database(entities = [WorkoutEntity::class, LoopEntity::class, ExerciseEntity::class], version = 1)
+@Database(
+    entities = [WorkoutEntity::class, LoopEntity::class, ExerciseEntity::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class WorkoutDB : RoomDatabase() {
     abstract fun workoutDao(): WorkoutDAO
 }

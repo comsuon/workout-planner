@@ -2,6 +2,7 @@ package com.comsuon.workoutplanner.di
 
 import android.content.Context
 import androidx.room.Room
+import com.comsuon.workoutplanner.repository.WorkoutRepo
 import com.comsuon.workoutplanner.repository.WorkoutRepoImpl
 import com.comsuon.workoutplanner.repository.db.WorkoutDB
 import dagger.Module
@@ -23,5 +24,5 @@ object RepoModule {
     }
 
     @Provides
-    fun getWorkoutRepo(appDB: WorkoutDB) = WorkoutRepoImpl(appDB)
+    fun getWorkoutRepo(appDB: WorkoutDB): WorkoutRepo = WorkoutRepoImpl(appDB)
 }
