@@ -13,5 +13,5 @@ data class ExerciseEntity(
     val timePerRep: Long,
     val autoFinished: Boolean,
     val skipLastSet: Boolean,
-    val colorCode: String
+    val colorCode: Long
 )

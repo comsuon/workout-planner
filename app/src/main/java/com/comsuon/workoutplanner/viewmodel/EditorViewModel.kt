@@ -22,16 +22,45 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     private val _uiState = MutableSharedFlow<UiState>()
     val uiState: SharedFlow<UiState> = _uiState
 
-    fun addExerciseData(loopIndex: Int, exercise: ExerciseModel) {
-
-    }
-
-    fun addLoop(loop: LoopModel) {
-
-    }
-
     fun setWorkoutName(workoutName: String) {
         _workoutData.modifyValue { copy(workoutName = workoutName) }
+    }
+
+    //use immutable list and then turn it to mutable list
+    //Jetpack compose is not compatible with mutable list
+    fun addEmptyLoop() {
+        val newList = _workoutData.value?.loopList?.toMutableList()?.also { it.add(LoopModel()) }
+            ?: listOf()
+        _workoutData.modifyValue { copy(loopList = newList) }
+    }
+
+    fun setLoop(index: Int, loop: LoopModel) {
+        val newList = _workoutData.value?.loopList?.toMutableList()?.also {
+            it[index] = loop
+        } ?: listOf()
+        _workoutData.modifyValue { copy(loopList = newList) }
+    }
+
+    fun addEmptyExercise(loopIndex: Int) {
+        val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopIndex)?.copy() ?: LoopModel()
+        newLoopModel.exerciseList = newLoopModel.exerciseList + listOf(ExerciseModel())
+        setLoop(loopIndex, newLoopModel)
+    }
+
+    fun updateExercise(loopIndex: Int, exerciseIndex: Int, newExerciseModel: ExerciseModel) {
+        val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopIndex)?.copy() ?: LoopModel()
+        val newList = newLoopModel.exerciseList.toMutableList()
+        newList[exerciseIndex] = newExerciseModel
+        newLoopModel.exerciseList = newList
+        setLoop(loopIndex, newLoopModel)
+    }
+
+    fun deleteExercise(loopIndex: Int, exerciseIndex: Int) {
+        val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopIndex)?.copy() ?: LoopModel()
+        newLoopModel.exerciseList.toMutableList().also {
+            it.removeAt(exerciseIndex)
+        }
+        setLoop(loopIndex, newLoopModel)
     }
 
     fun saveWorkout() {

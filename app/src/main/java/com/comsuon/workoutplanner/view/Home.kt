@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -66,6 +63,12 @@ fun NewWorkoutFAB(modifier: Modifier, onFABClicked: () -> Unit) {
         modifier = modifier,
         onClick = onFABClicked,
         text = { Text(text = stringResource(R.string.btn_new_workout)) },
-        icon = { Icon(Icons.Filled.Add, stringResource(R.string.btn_new_workout)) },
+        icon = {
+            Icon(
+                Icons.Filled.Add, stringResource(R.string.btn_new_workout), tint = contentColorFor(
+                    backgroundColor = MaterialTheme.colors.secondary
+                )
+            )
+        },
     )
 }

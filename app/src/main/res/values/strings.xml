@@ -4,4 +4,12 @@
     <string name="btn_new_workout">New workout</string>
     <string name="btn_save_workout">Save</string>
     <string name="tf_hint_workout_name">Workout name</string>
+    <string name="label_reps">Reps</string>
+    <string name="btn_add_loop">Add loop</string>
+    <string name="label_set_count">Sets</string>
+    <string name="label_time">Time</string>
+    <string name="second_label">sec</string>
+    <string name="tf_hint_exercise_name">Exercise name</string>
+    <string name="label_time_per_rep">Time per rep</string>
+    <string name="label_total_time">Total time</string>
 </resources>

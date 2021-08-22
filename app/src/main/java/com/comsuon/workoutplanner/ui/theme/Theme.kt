@@ -16,14 +16,16 @@ private val DarkColorPalette = darkColors(
     primary = Primary,
     primaryVariant = P_Dark,
     secondary = Secondary,
-    surface = P_Light
+    surface = P_Light,
+    onSecondary = Color.White
 )
 
 private val LightColorPalette = lightColors(
     primary = P_Light,
     primaryVariant = Primary,
     secondary = S_Light,
-    surface = Surface_Light
+    surface = Surface_Light,
+    onSecondary = Color.Black
 
     /* Other default colors to override
     background = Color.White,
@@ -63,10 +65,16 @@ val tfTextStyle by lazy {
 }
 
 @Composable
-fun tfColors() = TextFieldDefaults.textFieldColors(
-    textColor = Color.White,
-    backgroundColor = MaterialTheme.colors.primaryVariant,
-    focusedIndicatorColor = Color.Transparent,
-    unfocusedIndicatorColor = Color.Transparent,
-    disabledIndicatorColor = Color.Transparent
+fun tfColors(
+    textColor: Color = Color.White,
+    backgroundColor: Color = MaterialTheme.colors.primaryVariant,
+    focusedIndicatorColor: Color = Color.Transparent,
+    unfocusedIndicatorColor: Color = Color.Transparent,
+    disabledIndicatorColor: Color = Color.Transparent
+) = TextFieldDefaults.textFieldColors(
+    textColor = textColor,
+    backgroundColor = backgroundColor,
+    focusedIndicatorColor = focusedIndicatorColor,
+    unfocusedIndicatorColor = unfocusedIndicatorColor,
+    disabledIndicatorColor = disabledIndicatorColor
 )
