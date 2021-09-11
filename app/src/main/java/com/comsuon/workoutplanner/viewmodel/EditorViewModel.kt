@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comsuon.workoutplanner.repository.WorkoutRepo
+import com.comsuon.workoutplanner.ui.theme.Blue
 import com.comsuon.workoutplanner.utils.modifyValue
 import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
@@ -29,7 +30,18 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     //use immutable list and then turn it to mutable list
     //Jetpack compose is not compatible with mutable list
     fun addEmptyLoop() {
-        val newList = _workoutData.value?.loopList?.toMutableList()?.also { it.add(LoopModel()) }
+        val newLoopModel = LoopModel(
+            exerciseList = listOf(
+                ExerciseModel(),
+                ExerciseModel(
+                    exerciseName = "Rest",
+                    isTime = true,
+                    timePerRep = 45,
+                    colorCode = Blue
+                )
+            )
+        )
+        val newList = _workoutData.value?.loopList?.toMutableList()?.also { it.add(newLoopModel) }
             ?: listOf()
         _workoutData.modifyValue { copy(loopList = newList) }
     }
@@ -57,9 +69,10 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
 
     fun deleteExercise(loopIndex: Int, exerciseIndex: Int) {
         val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopIndex)?.copy() ?: LoopModel()
-        newLoopModel.exerciseList.toMutableList().also {
+        val newList = newLoopModel.exerciseList.toMutableList().also {
             it.removeAt(exerciseIndex)
         }
+        newLoopModel.exerciseList = newList
         setLoop(loopIndex, newLoopModel)
     }
 

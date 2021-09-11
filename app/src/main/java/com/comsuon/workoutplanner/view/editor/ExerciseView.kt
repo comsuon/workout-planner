@@ -2,11 +2,10 @@ package com.comsuon.workoutplanner.view.editor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults.buttonColors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,18 +25,21 @@ import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.ui.theme.tfColors
 import com.comsuon.workoutplanner.ui.theme.tfTextStyle
 import com.comsuon.workoutplanner.view.ExerciseModel
+import com.comsuon.workoutplanner.view.common.LabelledCheckbox
 
 @Composable
 fun ExerciseView(
+    modifier: Modifier = Modifier,
     exercise: ExerciseModel,
     onExerciseUpdate: (ExerciseModel) -> Unit,
-    onDeleteItem: (Int) -> Unit
+    onDeleteItem: () -> Unit
 ) {
     ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(horizontal = 8.dp)
-            .background(exercise.colorCode)
+        modifier = modifier.then(
+            Modifier
+                .padding(horizontal = 8.dp)
+                .background(exercise.colorCode)
+        )
     ) {
         val (exerciseName, typeContainer, contentContainer, optionsContainer) = createRefs()
         TextField(
@@ -67,16 +69,24 @@ fun ExerciseView(
             textStyle = tfTextStyle.merge(TextStyle(textAlign = TextAlign.Center)),
             onValueChange = { newValue -> onExerciseUpdate(exercise.copy(exerciseName = newValue)) }
         )
+        //Reps - Time selector
         TypeSelector(modifier = Modifier.constrainAs(typeContainer) {
             top.linkTo(exerciseName.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
         }, exercise = exercise, onUpdate = onExerciseUpdate)
+        //Main content of exercise
         Content(modifier = Modifier.constrainAs(contentContainer) {
             top.linkTo(typeContainer.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
         }, exercise = exercise, onUpdate = onExerciseUpdate)
+        //Render exercise options
+        ContentOptions(modifier = Modifier.constrainAs(optionsContainer) {
+            top.linkTo(contentContainer.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }, exercise = exercise, onUpdate = onExerciseUpdate, onDeleteExercise = onDeleteItem)
     }
 }
 
@@ -162,6 +172,42 @@ fun Content(exercise: ExerciseModel, modifier: Modifier, onUpdate: (ExerciseMode
             value = exercise.timePerRep.toString()
         ) { newTime ->
             onUpdate(exercise.copy(timePerRep = newTime.toInt()))
+        }
+    }
+}
+
+@Composable
+fun ContentOptions(
+    exercise: ExerciseModel,
+    modifier: Modifier,
+    onUpdate: (ExerciseModel) -> Unit,
+    onDeleteExercise: () -> Unit
+) {
+    Row(modifier = modifier.then(Modifier.fillMaxWidth(1f)), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            LabelledCheckbox(
+                isChecked = exercise.autoFinished,
+                label = stringResource(R.string.label_auto_finished)
+            ) {
+                val newModel = exercise.copy(autoFinished = it)
+                onUpdate(newModel)
+            }
+            LabelledCheckbox(
+                isChecked = exercise.skipLastSet,
+                label = stringResource(R.string.label_skip_last_set)
+            ) {
+                val newModel = exercise.copy(skipLastSet = it)
+                onUpdate(newModel)
+            }
+        }
+        IconButton(onClick = onDeleteExercise, modifier.background(Color.Transparent)) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete exercise",
+                tint = contentColorFor(
+                    backgroundColor = MaterialTheme.colors.primaryVariant
+                )
+            )
         }
     }
 }

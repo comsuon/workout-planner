@@ -12,4 +12,6 @@
     <string name="tf_hint_exercise_name">Exercise name</string>
     <string name="label_time_per_rep">Time per rep</string>
     <string name="label_total_time">Total time</string>
+    <string name="label_auto_finished">Auto finished</string>
+    <string name="label_skip_last_set">Skip last set</string>
 </resources>

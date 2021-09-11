@@ -100,7 +100,7 @@ fun NumberRoller(
                 )
                 TextField(
                     value = value,
-                    onValueChange = { value -> valueChanged(onRepsValueChanged(value)) },
+                    onValueChange = { value -> valueChanged(onRepsValueChanged(value, "$min")) },
                     colors = tfColors(backgroundColor = Color.Transparent),
                     textStyle = tfTextStyle.merge(
                         TextStyle(textAlign = if (isTimer.not()) TextAlign.Center else TextAlign.End)
@@ -134,8 +134,8 @@ fun NumberRoller(
     }
 }
 
-private fun onRepsValueChanged(value: String): String {
-    return value.filter { it.isDigit() }.toLongOrNull()?.toString() ?: "0"
+private fun onRepsValueChanged(value: String, min: String = "0"): String {
+    return value.filter { it.isDigit() }.toLongOrNull()?.toString() ?: min
 }
 
 private fun onButtonIncrease(value: String, step: Int): String {

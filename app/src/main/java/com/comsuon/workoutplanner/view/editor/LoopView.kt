@@ -117,8 +117,9 @@ fun ExerciseList(
         if (exerciseList.isNotEmpty()) {
             exerciseList.forEachIndexed { index, item ->
                 ExerciseView(
+                    modifier = if (index == 0) Modifier.padding(top = 44.dp) else Modifier,
                     exercise = item,
-                    onDeleteItem = onDeleteItem,
+                    onDeleteItem = { onDeleteItem(index) },
                     onExerciseUpdate = { newItem ->
                         onExerciseUpdated(index, newItem)
                     })
