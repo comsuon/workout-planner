@@ -30,15 +30,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.comsuon.workoutplanner.R
+import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.ui.theme.tfColors
 import com.comsuon.workoutplanner.ui.theme.tfTextStyle
 import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
+import com.comsuon.workoutplanner.view.common.CircularLoading
 import com.comsuon.workoutplanner.viewmodel.EditorViewModel
-import com.comsuon.workoutplanner.viewmodel.ErrorState
 import com.comsuon.workoutplanner.viewmodel.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -78,7 +80,7 @@ fun Editor(navController: NavController, viewModel: EditorViewModel) {
                     CircularLoading()
                 }
                 is UiState.Error<*> -> {
-                    val error = (uiState!!.peekContent() as UiState.Error<ErrorState>).error.errorCode
+                    val error = (uiState!!.peekContent() as UiState.Error<*>).error.errorCode
                     Toast.makeText(
                         LocalContext.current,
                         stringResource(id = error),
@@ -222,17 +224,4 @@ fun EditorTopAppBar(
         },
         elevation = 4.dp
     )
-}
-
-@Composable
-fun CircularLoading() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(1f)
-            .background(color = MaterialTheme.colors.surface.copy(alpha = 0.6f))
-    ) {
-        CircularProgressIndicator(
-            color = contentColorFor(backgroundColor = MaterialTheme.colors.surface)
-        )
-    }
 }

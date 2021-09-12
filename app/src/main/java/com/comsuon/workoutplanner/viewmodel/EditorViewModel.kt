@@ -13,9 +13,11 @@ import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.view.WorkoutModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.time.Duration
 
 @HiltViewModel
 class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewModel() {
@@ -87,6 +89,7 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
             withContext(Dispatchers.IO) {
                 repo.saveWorkoutData(_workoutData.value!!)
             }
+            delay(1500L)
             _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
         }
 
