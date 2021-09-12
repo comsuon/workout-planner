@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comsuon.workoutplanner.R
 import com.comsuon.workoutplanner.repository.WorkoutRepo
 import com.comsuon.workoutplanner.ui.theme.Blue
 import com.comsuon.workoutplanner.utils.modifyValue
@@ -11,17 +12,17 @@ import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.view.WorkoutModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewModel() {
     private val _workoutData = MutableLiveData(WorkoutModel())
     val workoutData: LiveData<WorkoutModel> = _workoutData
-    private val _uiState = MutableSharedFlow<UiState>()
-    val uiState: SharedFlow<UiState> = _uiState
+    private val _uiState = MutableLiveData<Event<UiState>>()
+    val uiState: LiveData<Event<UiState>> = _uiState
 
     fun setWorkoutName(workoutName: String) {
         _workoutData.modifyValue { copy(workoutName = workoutName) }
@@ -77,9 +78,20 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     }
 
     fun saveWorkout() {
+        if (_workoutData.value?.workoutName.isNullOrEmpty()) {
+            _uiState.postValue(Event(UiState.Error(WorkoutNameMissing)))
+            return
+        }
         viewModelScope.launch {
-            _uiState.emit(UiState.Loading)
+            _uiState.postValue(Event(UiState.Loading))
+            withContext(Dispatchers.IO) {
+                repo.saveWorkoutData(_workoutData.value!!)
+            }
+            _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
         }
 
     }
 }
+
+object SaveWorkoutSuccess
+object WorkoutNameMissing : ErrorState(R.string.error_workout_name_missing)

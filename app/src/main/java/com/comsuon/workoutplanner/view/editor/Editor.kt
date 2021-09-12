@@ -38,6 +38,8 @@ import com.comsuon.workoutplanner.ui.theme.tfTextStyle
 import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.viewmodel.EditorViewModel
+import com.comsuon.workoutplanner.viewmodel.ErrorState
+import com.comsuon.workoutplanner.viewmodel.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -45,14 +47,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun Editor(navController: NavController, viewModel: EditorViewModel) {
     val workoutModel by viewModel.workoutData.observeAsState()
+    val uiState by viewModel.uiState.observeAsState()
+
     Scaffold(topBar = {
         val context = LocalContext.current
         EditorTopAppBar(
             workoutName = workoutModel?.workoutName ?: "",
             onSaveClicked = {
                 viewModel.saveWorkout()
-                Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
-                navController.popBackStack()
             },
             onWorkoutNameChanged = viewModel::setWorkoutName,
             onBackPressed = { navController.popBackStack() }
@@ -71,6 +73,25 @@ fun Editor(navController: NavController, viewModel: EditorViewModel) {
                 onExerciseUpdated = viewModel::updateExercise,
                 onDeleteExercise = viewModel::deleteExercise
             )
+            when (uiState?.getContentIfNotHandled()) {
+                is UiState.Loading -> {
+                    CircularLoading()
+                }
+                is UiState.Error<*> -> {
+                    val error = (uiState!!.peekContent() as UiState.Error<ErrorState>).error.errorCode
+                    Toast.makeText(
+                        LocalContext.current,
+                        stringResource(id = error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is UiState.Success<*> -> {
+                    Toast.makeText(LocalContext.current, "Saved!", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                }
+                else -> {
+                }
+            }
         }
     }
 }
@@ -201,4 +222,17 @@ fun EditorTopAppBar(
         },
         elevation = 4.dp
     )
+}
+
+@Composable
+fun CircularLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .background(color = MaterialTheme.colors.surface.copy(alpha = 0.6f))
+    ) {
+        CircularProgressIndicator(
+            color = contentColorFor(backgroundColor = MaterialTheme.colors.surface)
+        )
+    }
 }

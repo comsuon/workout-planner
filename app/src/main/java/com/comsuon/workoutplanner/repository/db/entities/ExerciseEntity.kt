@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "exercise")
 data class ExerciseEntity(
-    @PrimaryKey
-    val exerciseId: Int,
+    @PrimaryKey(autoGenerate = true)
+    val exerciseId: Int = 0,
     val loopId: Int,
     val exerciseName: String,
     val repCount: Int,
-    val timePerRep: Long,
+    val timePerRep: Int,
     val autoFinished: Boolean,
     val skipLastSet: Boolean,
-    val colorCode: Long
+    val colorCode: String
 )
