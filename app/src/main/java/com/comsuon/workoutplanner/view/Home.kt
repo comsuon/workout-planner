@@ -20,9 +20,10 @@ import com.comsuon.workoutplanner.R
 import com.comsuon.workoutplanner.navigation.Screens
 import com.comsuon.workoutplanner.ui.theme.Text_Primary
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
+import com.comsuon.workoutplanner.viewmodel.HomeViewModel
 
 @Composable
-fun Home(navController: NavController) {
+fun Home(navController: NavController, viewModel: HomeViewModel) {
     WorkoutPlannerTheme {
         val scrollSate = rememberScrollState()
         Box(

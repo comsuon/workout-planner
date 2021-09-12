@@ -1,5 +1,6 @@
 package com.comsuon.workoutplanner.repository.db
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.comsuon.workoutplanner.repository.db.dao.ExerciseDAO
@@ -11,7 +12,7 @@ import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
 
 @Database(
     entities = [WorkoutEntity::class, LoopEntity::class, ExerciseEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class WorkoutDB : RoomDatabase() {

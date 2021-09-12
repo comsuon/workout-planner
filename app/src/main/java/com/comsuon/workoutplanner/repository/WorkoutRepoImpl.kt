@@ -5,13 +5,14 @@ import com.comsuon.workoutplanner.repository.db.entities.ExerciseEntity
 import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
 import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
 import com.comsuon.workoutplanner.repository.db.pojo.WorkoutData
+import com.comsuon.workoutplanner.repository.db.pojo.toModel
 import com.comsuon.workoutplanner.view.WorkoutModel
 
 class WorkoutRepoImpl constructor(
     private val appDB: WorkoutDB
 ) : WorkoutRepo {
-    override suspend fun getWorkoutDataList(): List<WorkoutData> {
-        return appDB.workoutDao().getWorkoutDataList()
+    override suspend fun getWorkoutDataList(): List<WorkoutModel> {
+        return appDB.workoutDao().getWorkoutDataList().map(WorkoutData::toModel)
     }
 
     override suspend fun saveWorkoutData(data: WorkoutModel) {
@@ -25,6 +26,7 @@ class WorkoutRepoImpl constructor(
                 ExerciseEntity(
                     loopId = loopId.toInt(),
                     exerciseName = exerciseModel.exerciseName,
+                    isTime = exerciseModel.isTime,
                     timePerRep = exerciseModel.timePerRep,
                     repCount = exerciseModel.repCount,
                     autoFinished = exerciseModel.autoFinished,

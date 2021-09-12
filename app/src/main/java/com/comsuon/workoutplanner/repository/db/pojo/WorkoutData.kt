@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
 import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
+import com.comsuon.workoutplanner.view.WorkoutModel
 
 data class WorkoutData(
     @Embedded val workoutEntity: WorkoutEntity,
@@ -15,3 +16,10 @@ data class WorkoutData(
     )
     val listOfLoop: List<LoopExercises>
 )
+
+fun WorkoutData.toModel(): WorkoutModel {
+    return WorkoutModel(
+        workoutEntity.name,
+        loopList = listOfLoop.map(LoopExercises::toModel)
+    )
+}

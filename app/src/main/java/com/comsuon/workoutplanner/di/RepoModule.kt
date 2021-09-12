@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.comsuon.workoutplanner.repository.WorkoutRepo
 import com.comsuon.workoutplanner.repository.WorkoutRepoImpl
+import com.comsuon.workoutplanner.repository.db.MIGRATION_1_2
 import com.comsuon.workoutplanner.repository.db.WorkoutDB
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ object RepoModule {
         return Room.databaseBuilder(
             appContext,
             WorkoutDB::class.java, "workout-planner"
-        ).build()
+        ).addMigrations(MIGRATION_1_2).build()
     }
 
     @Provides

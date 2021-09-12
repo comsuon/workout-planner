@@ -9,6 +9,7 @@ data class ExerciseEntity(
     val exerciseId: Int = 0,
     val loopId: Int,
     val exerciseName: String,
+    val isTime: Boolean,
     val repCount: Int,
     val timePerRep: Int,
     val autoFinished: Boolean,

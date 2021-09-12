@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     composable(route = Screens.Home.name) {
-                        Home(navController = navController)
+                        Home(navController = navController, viewModel = hiltViewModel())
                     }
                     composable(route = Screens.Editor.name) {
                         Editor(navController = navController, viewModel = hiltViewModel())
