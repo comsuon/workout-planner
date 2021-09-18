@@ -30,11 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.comsuon.workoutplanner.R
-import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.ui.theme.tfColors
 import com.comsuon.workoutplanner.ui.theme.tfTextStyle
 import com.comsuon.workoutplanner.view.ExerciseModel
@@ -50,6 +48,7 @@ import kotlinx.coroutines.launch
 fun Editor(navController: NavController, viewModel: EditorViewModel) {
     val workoutModel by viewModel.workoutData.observeAsState()
     val uiState by viewModel.uiState.observeAsState()
+    val scrollIndex by viewModel.scrollIndex.observeAsState()
 
     Scaffold(topBar = {
         val context = LocalContext.current
@@ -73,7 +72,9 @@ fun Editor(navController: NavController, viewModel: EditorViewModel) {
                 addEmptyLoop = viewModel::addEmptyLoop,
                 onAddEmptyExercise = viewModel::addEmptyExercise,
                 onExerciseUpdated = viewModel::updateExercise,
-                onDeleteExercise = viewModel::deleteExercise
+                onDeleteExercise = viewModel::deleteExercise,
+                onDeleteLoop = viewModel::deleteLoop,
+                scrollIndex = scrollIndex?.getContentIfNotHandled()
             )
             when (uiState?.getContentIfNotHandled()) {
                 is UiState.Loading -> {
@@ -103,9 +104,11 @@ fun LoopList(
     loopList: List<LoopModel>,
     onLoopChange: (Int, LoopModel) -> Unit,
     addEmptyLoop: () -> Unit,
+    onDeleteLoop: (Int) -> Unit,
     onExerciseUpdated: (Int, Int, ExerciseModel) -> Unit,
     onDeleteExercise: (Int, Int) -> Unit,
-    onAddEmptyExercise: (Int) -> Unit
+    onAddEmptyExercise: (Int) -> Unit,
+    scrollIndex: Int?
 ) {
     var listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -130,7 +133,8 @@ fun LoopList(
                     )
                 },
                 onDeleteItem = { exerciseIndex -> onDeleteExercise(index, exerciseIndex) },
-                onAddNewExercise = { onAddEmptyExercise(index) }
+                onAddNewExercise = { onAddEmptyExercise(index) },
+                onDeleteLoop = { onDeleteLoop(index) }
             )
             Divider(color = Color.Transparent, thickness = 16.dp)
         }
@@ -143,6 +147,11 @@ fun LoopList(
                     delay(500)
                     listState.animateScrollToItem(loopList.size)
                 }
+            }
+        }
+        scrollIndex?.let {
+            coroutineScope.launch {
+                listState.animateScrollToItem(it)
             }
         }
     }

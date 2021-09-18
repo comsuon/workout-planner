@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +29,8 @@ fun LoopView(
     onDeleteItem: (Int) -> Unit,
     onAddNewExercise: () -> Unit,
     onExerciseUpdated: (Int, ExerciseModel) -> Unit,
-    onLoopUpdated: (LoopModel) -> Unit
+    onLoopUpdated: (LoopModel) -> Unit,
+    onDeleteLoop: () -> Unit
 ) {
     Box(
         Modifier
@@ -55,6 +57,7 @@ fun LoopView(
             val newLoop = loopModel.copy(setCount = newSetCount)
             onLoopUpdated(newLoop)
         }
+        DeleteLoop(modifier = Modifier.align(Alignment.TopEnd).padding(top = 8.dp), onDeleteLoop)
     }
 
 }
@@ -100,6 +103,22 @@ fun SetCount(setCount: Int = 3, onSetCountUpdated: (Int) -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DeleteLoop(modifier: Modifier, onDeleteLoop: () -> Unit) {
+    IconButton(
+        onClick = onDeleteLoop,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "Delete loop",
+            tint = contentColorFor(
+                backgroundColor = MaterialTheme.colors.primary
+            )
+        )
     }
 }
 

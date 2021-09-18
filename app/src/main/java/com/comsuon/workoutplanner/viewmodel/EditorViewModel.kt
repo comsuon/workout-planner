@@ -17,14 +17,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.time.Duration
 
 @HiltViewModel
 class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewModel() {
+    //Workout data livedata
     private val _workoutData = MutableLiveData(WorkoutModel())
     val workoutData: LiveData<WorkoutModel> = _workoutData
+
+    //UI state livedata
     private val _uiState = MutableLiveData<Event<UiState>>()
     val uiState: LiveData<Event<UiState>> = _uiState
+
+    //list item scroll index livedata
+    private val _scrollIndex = MutableLiveData<Event<Int>>()
+    val scrollIndex: LiveData<Event<Int>> = _scrollIndex
 
     fun setWorkoutName(workoutName: String) {
         _workoutData.modifyValue { copy(workoutName = workoutName) }
@@ -46,6 +52,13 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
         )
         val newList = _workoutData.value?.loopList?.toMutableList()?.also { it.add(newLoopModel) }
             ?: listOf()
+        _workoutData.modifyValue { copy(loopList = newList) }
+    }
+
+    fun deleteLoop(loopIndex: Int) {
+        val newList = _workoutData.value?.loopList?.toMutableList()?.also {
+            it.removeAt(loopIndex)
+        } ?: listOf()
         _workoutData.modifyValue { copy(loopList = newList) }
     }
 
@@ -80,8 +93,17 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     }
 
     fun saveWorkout() {
-        if (_workoutData.value?.workoutName.isNullOrEmpty()) {
-            _uiState.postValue(Event(UiState.Error(WorkoutNameMissing)))
+        getValidationError()?.also { it ->
+            _uiState.postValue(Event(UiState.Error(it)))
+            if (it is EmptyExercise) {
+                val loopIndex =
+                    _workoutData.value?.loopList?.indexOfFirst { loopModel ->
+                        loopModel.exerciseList.isNullOrEmpty()
+                    } ?: 0
+                _scrollIndex.postValue(
+                    Event(loopIndex)
+                )
+            }
             return
         }
         viewModelScope.launch {
@@ -92,9 +114,24 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
             delay(1500L)
             _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
         }
+    }
 
+    private fun getValidationError(): ErrorState? {
+        if (_workoutData.value?.workoutName.isNullOrEmpty())
+            return WorkoutNameMissing
+
+        if (_workoutData.value?.loopList.isNullOrEmpty())
+            return EmptyLoop
+
+        if (_workoutData.value?.loopList?.any { it.exerciseList.isEmpty() } == true)
+            return EmptyExercise
+
+        //else no error return null
+        return null
     }
 }
 
 object SaveWorkoutSuccess
 object WorkoutNameMissing : ErrorState(R.string.error_workout_name_missing)
+object EmptyLoop : ErrorState(R.string.error_empty_loop)
+object EmptyExercise : ErrorState(R.string.error_empty_exercise_in_loop)
