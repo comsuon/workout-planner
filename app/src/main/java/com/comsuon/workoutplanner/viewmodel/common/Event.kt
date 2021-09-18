@@ -1,4 +1,4 @@
-package com.comsuon.workoutplanner.viewmodel
+package com.comsuon.workoutplanner.viewmodel.common
 
 open class Event<out T>(private val content: T) {
 

@@ -39,7 +39,7 @@ import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.view.common.CircularLoading
 import com.comsuon.workoutplanner.viewmodel.EditorViewModel
-import com.comsuon.workoutplanner.viewmodel.UiState
+import com.comsuon.workoutplanner.viewmodel.common.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

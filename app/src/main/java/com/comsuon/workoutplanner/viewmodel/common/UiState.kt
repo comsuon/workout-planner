@@ -1,4 +1,4 @@
-package com.comsuon.workoutplanner.viewmodel
+package com.comsuon.workoutplanner.viewmodel.common
 
 sealed class UiState {
     object Empty : UiState()

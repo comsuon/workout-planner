@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comsuon.workoutplanner.repository.WorkoutRepo
 import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.workoutplanner.viewmodel.common.Event
+import com.comsuon.workoutplanner.viewmodel.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +20,9 @@ class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
     private val _uiState = MutableLiveData<Event<UiState>>()
     val workoutList: LiveData<List<WorkoutModel>> = _workoutList
     val uiState: LiveData<Event<UiState>> = _uiState
-    
+    init {
+        loadWorkoutList()
+    }
     fun loadWorkoutList() {
         _uiState.postValue(Event(UiState.Loading))
         viewModelScope.launch {

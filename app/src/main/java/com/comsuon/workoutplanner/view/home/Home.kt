@@ -1,16 +1,16 @@
-package com.comsuon.workoutplanner.view
+package com.comsuon.workoutplanner.view.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,8 +22,10 @@ import com.comsuon.workoutplanner.ui.theme.Text_Primary
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.viewmodel.HomeViewModel
 
+@ExperimentalMaterialApi
 @Composable
 fun Home(navController: NavController, viewModel: HomeViewModel) {
+    val workoutList by viewModel.workoutList.observeAsState()
     WorkoutPlannerTheme {
         val scrollSate = rememberScrollState()
         Box(
@@ -31,12 +33,24 @@ fun Home(navController: NavController, viewModel: HomeViewModel) {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colors.primaryVariant)
         ) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(state = scrollSate)
-                    .padding(horizontal = 16.dp, vertical = 24.dp),
-            ) {
-                WorkoutListTitle()
+            if (workoutList.isNullOrEmpty().not()) {
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    contentPadding = PaddingValues(vertical = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    item {
+                        WorkoutListTitle()
+                    }
+                    itemsIndexed(workoutList!!) { index, workoutModel ->
+                        WorkoutView(
+                            workoutModel = workoutModel,
+                            onWorkoutSelected = { },
+                            onWorkoutUpdated = { },
+                            onWorkoutDeleted = { },
+                            onWorkoutStarted = {})
+                    }
+                }
             }
             NewWorkoutFAB(
                 modifier = Modifier

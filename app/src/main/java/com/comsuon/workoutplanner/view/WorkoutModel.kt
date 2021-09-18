@@ -5,7 +5,8 @@ import com.comsuon.workoutplanner.ui.theme.EXERCISE_COLORS
 
 data class WorkoutModel(
     var workoutName: String = "",
-    var loopList: List<LoopModel> = listOf()
+    var loopList: List<LoopModel> = listOf(),
+    var isFavourite: Boolean = false
 )
 
 data class LoopModel(

@@ -20,6 +20,7 @@ data class WorkoutData(
 fun WorkoutData.toModel(): WorkoutModel {
     return WorkoutModel(
         workoutEntity.name,
-        loopList = listOfLoop.map(LoopExercises::toModel)
+        loopList = listOfLoop.map(LoopExercises::toModel),
+        isFavourite = workoutEntity.isFavourite
     )
 }
