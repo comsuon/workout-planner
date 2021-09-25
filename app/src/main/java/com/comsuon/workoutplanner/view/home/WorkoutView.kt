@@ -1,10 +1,15 @@
 package com.comsuon.workoutplanner.view.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,23 +36,47 @@ fun WorkoutView(
     onWorkoutStarted: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(1f),
-        onClick = {},
+        modifier = Modifier
+            .fillMaxWidth(1f)
+            .clickable(false, onClick = {}),
         elevation = 4.dp,
         backgroundColor = MaterialTheme.colors.primary,
         contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Box(modifier = Modifier.padding(vertical = 12.dp)) {
             Column(horizontalAlignment = Alignment.Start) {
-                Text(
-                    workoutModel.workoutName,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    style = TextStyle(
-                        color = contentColorFor(backgroundColor = MaterialTheme.colors.primaryVariant),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
+                    Text(
+                        workoutModel.workoutName,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        style = TextStyle(
+                            color = contentColorFor(backgroundColor = MaterialTheme.colors.primaryVariant),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     )
-                )
+                    Row(
+                        modifier = Modifier.background(
+                            color = MaterialTheme.colors.surface,
+                            shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
+                        )
+                    ) {
+                        IconButton(onClick = onWorkoutDeleted) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "delete workout",
+                                tint = contentColorFor(backgroundColor = MaterialTheme.colors.surface)
+                            )
+                        }
+                        IconButton(onClick = onWorkoutSelected) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "delete workout",
+                                tint = contentColorFor(backgroundColor = MaterialTheme.colors.surface)
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     Modifier.padding(vertical = 8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),

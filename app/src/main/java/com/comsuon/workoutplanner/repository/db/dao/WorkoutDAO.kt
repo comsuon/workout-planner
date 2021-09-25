@@ -1,9 +1,6 @@
 package com.comsuon.workoutplanner.repository.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
 import com.comsuon.workoutplanner.repository.db.pojo.WorkoutData
 
@@ -15,6 +12,14 @@ interface WorkoutDAO {
     fun getWorkoutDataList(): List<WorkoutData>
 
     @Transaction
+    @Query("SELECT * FROM workout WHERE id=:id")
+    fun getWorkoutById(id: Int): WorkoutData
+
+    @Transaction
     @Insert
     fun insertWorkout(workoutEntity: WorkoutEntity): Long
+
+    @Transaction
+    @Delete
+    fun deleteWorkout(workoutData: WorkoutEntity)
 }

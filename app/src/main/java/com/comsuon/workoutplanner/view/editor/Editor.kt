@@ -46,13 +46,15 @@ import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @Composable
-fun Editor(navController: NavController, viewModel: EditorViewModel) {
+fun Editor(navController: NavController, workoutId: String = "", viewModel: EditorViewModel) {
     val workoutModel by viewModel.workoutData.observeAsState()
     val uiState by viewModel.uiState.observeAsState()
     val scrollIndex by viewModel.scrollIndex.observeAsState()
-
+    val context = LocalContext.current
+    if (workoutId.isEmpty().not()) {
+        viewModel.loadWorkout(workoutId)
+    }
     Scaffold(topBar = {
-        val context = LocalContext.current
         EditorTopAppBar(
             workoutName = workoutModel?.workoutName ?: "",
             onSaveClicked = {
@@ -84,13 +86,13 @@ fun Editor(navController: NavController, viewModel: EditorViewModel) {
                 is UiState.Error<*> -> {
                     val error = (uiState!!.peekContent() as UiState.Error<*>).error.errorCode
                     Toast.makeText(
-                        LocalContext.current,
+                        context,
                         stringResource(id = error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
                 is UiState.Success<*> -> {
-                    Toast.makeText(LocalContext.current, "Saved!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(WORKOUT_SAVE_KEY, true)

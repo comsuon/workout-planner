@@ -43,7 +43,12 @@ class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
     }
 
     fun deleteWorkout(index: Int) {
-
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repo.deleteWorkout(index)
+            }
+            loadWorkoutList()
+        }
     }
 
     fun addFavourite(index: Int) {

@@ -23,6 +23,7 @@ import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.viewmodel.HomeViewModel
 
 const val WORKOUT_SAVE_KEY = "WORKOUT_SAVE_KEY"
+const val WORKOUT_ID = "WORKOUT_ID_KEY"
 
 @ExperimentalMaterialApi
 @Composable
@@ -52,9 +53,9 @@ fun Home(navController: NavController, viewModel: HomeViewModel) {
                     itemsIndexed(workoutList!!) { index, workoutModel ->
                         WorkoutView(
                             workoutModel = workoutModel,
-                            onWorkoutSelected = { },
+                            onWorkoutSelected = { navController.navigate("${Screens.Editor.name}?${Screens.Editor.extras}=${workoutModel.index}") },
                             onWorkoutUpdated = { viewModel.addFavourite(index) },
-                            onWorkoutDeleted = { viewModel.deleteWorkout(index) },
+                            onWorkoutDeleted = { viewModel.deleteWorkout(workoutModel.index) },
                             onWorkoutStarted = { })
                     }
                 }

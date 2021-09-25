@@ -15,6 +15,15 @@ class WorkoutRepoImpl constructor(
         return appDB.workoutDao().getWorkoutDataList().map(WorkoutData::toModel)
     }
 
+    override suspend fun getWorkout(id: Int): WorkoutModel {
+        return appDB.workoutDao().getWorkoutById(id).toModel()
+    }
+
+    override suspend fun deleteWorkout(id: Int) {
+        val workoutData = appDB.workoutDao().getWorkoutById(id)
+        appDB.workoutDao().deleteWorkout(workoutData.workoutEntity)
+    }
+
     override suspend fun saveWorkoutData(data: WorkoutModel) {
         val workoutEntity = WorkoutEntity(name = data.workoutName)
         val workoutId = appDB.workoutDao().insertWorkout(workoutEntity)

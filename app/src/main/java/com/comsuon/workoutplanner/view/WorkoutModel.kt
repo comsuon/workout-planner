@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.comsuon.workoutplanner.ui.theme.EXERCISE_COLORS
 
 data class WorkoutModel(
+    var index: Int = 0,
     var workoutName: String = "",
     var loopList: List<LoopModel> = listOf(),
     var isFavourite: Boolean = false

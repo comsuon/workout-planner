@@ -35,6 +35,21 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     private val _scrollIndex = MutableLiveData<Event<Int>>()
     val scrollIndex: LiveData<Event<Int>> = _scrollIndex
 
+    fun loadWorkout(id: String) {
+        viewModelScope.launch {
+            val workOutModel = try {
+                withContext(Dispatchers.IO) {
+                    repo.getWorkout(id.toInt())
+                }
+            } catch (e: Exception) {
+                null
+            }
+            workOutModel?.let {
+                _workoutData.postValue(it)
+            }
+        }
+    }
+
     fun setWorkoutName(workoutName: String) {
         _workoutData.modifyValue { copy(workoutName = workoutName) }
     }

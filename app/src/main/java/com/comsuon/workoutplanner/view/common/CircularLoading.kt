@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 
@@ -17,7 +18,7 @@ fun CircularLoading() {
         Box(
             modifier = Modifier
                 .fillMaxSize(1f)
-                .background(color = MaterialTheme.colors.primaryVariant.copy(alpha = 0.8f)),
+                .background(color = Color.Black.copy(alpha = 0.6f)),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
