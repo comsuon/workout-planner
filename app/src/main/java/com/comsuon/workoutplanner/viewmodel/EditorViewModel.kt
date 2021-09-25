@@ -111,11 +111,15 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
         }
         viewModelScope.launch {
             _uiState.postValue(Event(UiState.Loading))
-            withContext(Dispatchers.IO) {
-                repo.saveWorkoutData(_workoutData.value!!)
-            }
             delay(1500L)
-            _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
+            try {
+                withContext(Dispatchers.IO) {
+                    repo.saveWorkoutData(_workoutData.value!!)
+                }
+                _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
+            } catch (e: Exception) {
+                _uiState.postValue(Event(UiState.Error(ErrorSavingExercise)))
+            }
         }
     }
 
@@ -138,3 +142,4 @@ object SaveWorkoutSuccess
 object WorkoutNameMissing : ErrorState(R.string.error_workout_name_missing)
 object EmptyLoop : ErrorState(R.string.error_empty_loop)
 object EmptyExercise : ErrorState(R.string.error_empty_exercise_in_loop)
+object ErrorSavingExercise : ErrorState(R.string.error_empty_exercise_in_loop)

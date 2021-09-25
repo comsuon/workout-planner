@@ -20,9 +20,11 @@ class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
     private val _uiState = MutableLiveData<Event<UiState>>()
     val workoutList: LiveData<List<WorkoutModel>> = _workoutList
     val uiState: LiveData<Event<UiState>> = _uiState
+
     init {
         loadWorkoutList()
     }
+
     fun loadWorkoutList() {
         _uiState.postValue(Event(UiState.Loading))
         viewModelScope.launch {
@@ -38,5 +40,13 @@ class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
             }
             _uiState.postValue(Event(UiState.Empty))
         }
+    }
+
+    fun deleteWorkout(index: Int) {
+
+    }
+
+    fun addFavourite(index: Int) {
+
     }
 }

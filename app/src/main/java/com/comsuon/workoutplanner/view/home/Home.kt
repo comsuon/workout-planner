@@ -22,12 +22,19 @@ import com.comsuon.workoutplanner.ui.theme.Text_Primary
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.viewmodel.HomeViewModel
 
+const val WORKOUT_SAVE_KEY = "WORKOUT_SAVE_KEY"
+
 @ExperimentalMaterialApi
 @Composable
 fun Home(navController: NavController, viewModel: HomeViewModel) {
     val workoutList by viewModel.workoutList.observeAsState()
+    val workoutSaveResult =
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData(WORKOUT_SAVE_KEY, false)
+            ?.observeAsState()
+
     WorkoutPlannerTheme {
         val scrollSate = rememberScrollState()
+        workoutSaveResult?.value?.let { saveSuccess -> if (saveSuccess) viewModel.loadWorkoutList() }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,9 +53,9 @@ fun Home(navController: NavController, viewModel: HomeViewModel) {
                         WorkoutView(
                             workoutModel = workoutModel,
                             onWorkoutSelected = { },
-                            onWorkoutUpdated = { },
-                            onWorkoutDeleted = { },
-                            onWorkoutStarted = {})
+                            onWorkoutUpdated = { viewModel.addFavourite(index) },
+                            onWorkoutDeleted = { viewModel.deleteWorkout(index) },
+                            onWorkoutStarted = { })
                     }
                 }
             }

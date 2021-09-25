@@ -17,4 +17,5 @@
     <string name="error_workout_name_missing">Please enter workout name!</string>
     <string name="error_empty_loop">Please add loop to workout!</string>
     <string name="error_empty_exercise_in_loop">Please make sure loop has at least one exercise!</string>
+    <string name="error_saving_exercise">Please make sure all information is correct!</string>
 </resources>

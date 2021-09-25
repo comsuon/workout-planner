@@ -38,6 +38,7 @@ import com.comsuon.workoutplanner.ui.theme.tfTextStyle
 import com.comsuon.workoutplanner.view.ExerciseModel
 import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.view.common.CircularLoading
+import com.comsuon.workoutplanner.view.home.WORKOUT_SAVE_KEY
 import com.comsuon.workoutplanner.viewmodel.EditorViewModel
 import com.comsuon.workoutplanner.viewmodel.common.UiState
 import kotlinx.coroutines.delay
@@ -90,6 +91,9 @@ fun Editor(navController: NavController, viewModel: EditorViewModel) {
                 }
                 is UiState.Success<*> -> {
                     Toast.makeText(LocalContext.current, "Saved!", Toast.LENGTH_SHORT).show()
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(WORKOUT_SAVE_KEY, true)
                     navController.popBackStack()
                 }
                 else -> {
