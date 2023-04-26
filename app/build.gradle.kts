@@ -61,10 +61,6 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
 
-    //hilt
-    implementation("com.google.dagger:hilt-android:${rootProject.extra["hilt_version"]}")
-    kapt("com.google.dagger:hilt-android-compiler:${rootProject.extra["hilt_version"]}")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
 
     //Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha03")

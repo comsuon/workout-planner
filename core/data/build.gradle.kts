@@ -2,7 +2,6 @@ plugins {
     id("wp.android.library")
     id("kotlinx-serialization")
     id("wp.android.hilt")
-    id("wp.android.room")
 }
 android {
     namespace = "com.wp.core.data"
@@ -16,6 +15,7 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:database"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.datetime)

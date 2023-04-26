@@ -7,5 +7,5 @@ data class ExerciseModel(
     var isTime: Boolean = false,
     var autoFinished: Boolean = true,
     var skipLastSet: Boolean = false,
-    var colorCode: Int = 0
+    var colorCode: String = ""
 )

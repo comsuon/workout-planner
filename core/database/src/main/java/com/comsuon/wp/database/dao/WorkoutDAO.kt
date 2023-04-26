@@ -1,8 +1,8 @@
-package com.comsuon.workoutplanner.repository.db.dao
+package com.comsuon.wp.database.dao
 
 import androidx.room.*
-import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
-import com.comsuon.workoutplanner.repository.db.pojo.WorkoutData
+import com.comsuon.wp.database.model.WorkoutData
+import com.comsuon.wp.database.model.WorkoutEntity
 
 @Dao
 interface WorkoutDAO {

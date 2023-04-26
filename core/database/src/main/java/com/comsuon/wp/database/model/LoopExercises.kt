@@ -1,21 +1,19 @@
-package com.comsuon.workoutplanner.repository.db.pojo
+package com.comsuon.wp.database.model
 
-import androidx.compose.ui.graphics.Color
+import android.graphics.Color
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.comsuon.workoutplanner.repository.db.entities.ExerciseEntity
-import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
-import com.comsuon.workoutplanner.view.ExerciseModel
-import com.comsuon.workoutplanner.view.LoopModel
+import com.comsuon.wp.model.ExerciseModel
+import com.comsuon.wp.model.LoopModel
 
 data class LoopExercises(
-    @Embedded val loop: LoopEntity,
+    @Embedded val loop: com.comsuon.wp.database.model.LoopEntity,
 
     @Relation(
         parentColumn = "loopId",
         entityColumn = "loopId"
     )
-    val listExercises: List<ExerciseEntity>
+    val listExercises: List<com.comsuon.wp.database.model.ExerciseEntity>
 )
 
 fun LoopExercises.toModel(): LoopModel {
@@ -28,7 +26,7 @@ fun LoopExercises.toModel(): LoopModel {
             isTime = exerciseEntity.isTime,
             autoFinished = exerciseEntity.autoFinished,
             skipLastSet = exerciseEntity.skipLastSet,
-            colorCode = Color(exerciseEntity.colorCode.toULong())
+            colorCode = exerciseEntity.colorCode
         )
     }
     loopModel.exerciseList = listExercises

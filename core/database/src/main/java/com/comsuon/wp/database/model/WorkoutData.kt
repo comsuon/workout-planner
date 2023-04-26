@@ -1,10 +1,8 @@
-package com.comsuon.workoutplanner.repository.db.pojo
+package com.comsuon.wp.database.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
-import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
-import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.wp.model.WorkoutModel
 
 data class WorkoutData(
     @Embedded val workoutEntity: WorkoutEntity,

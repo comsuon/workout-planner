@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.wp.model.WorkoutModel
 import com.comsuon.workoutplanner.viewmodel.common.Event
 import com.comsuon.workoutplanner.viewmodel.common.UiState
 import com.wp.core.data.repository.WorkoutRepo

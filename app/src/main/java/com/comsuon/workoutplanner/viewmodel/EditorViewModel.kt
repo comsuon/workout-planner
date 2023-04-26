@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.comsuon.workoutplanner.R
 import com.comsuon.workoutplanner.ui.theme.Blue
 import com.comsuon.workoutplanner.utils.modifyValue
-import com.comsuon.workoutplanner.view.ExerciseModel
-import com.comsuon.workoutplanner.view.LoopModel
-import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.wp.model.ExerciseModel
+import com.comsuon.wp.model.LoopModel
+import com.comsuon.wp.model.WorkoutModel
 import com.comsuon.workoutplanner.viewmodel.common.ErrorState
 import com.comsuon.workoutplanner.viewmodel.common.Event
 import com.comsuon.workoutplanner.viewmodel.common.UiState
@@ -64,7 +64,7 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
                     exerciseName = "Rest",
                     isTime = true,
                     timePerRep = 45,
-                    colorCode = Blue
+                    colorCode = 0
                 )
             )
         )

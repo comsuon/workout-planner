@@ -1,4 +1,4 @@
-package com.comsuon.workoutplanner.repository.db.entities
+package com.comsuon.wp.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
