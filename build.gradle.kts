@@ -4,21 +4,28 @@ buildscript {
     val nav_version by extra("2.3.5")
     val room_version by extra("2.3.0")
     val hilt_version by extra("2.38.1")
+    val kotlin_version by extra("1.8.21")
+
 
     repositories {
         google()
         mavenCentral()
     }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle.kts files
-    }
+    //    dependencies {
+//        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0")
+//        classpath("com.android.tools.build:gradle")
+//    }
 }
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.gms) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.secrets) apply false
 }

@@ -1,6 +1,6 @@
-package com.comsuon.workoutplanner.repository
+package com.wp.core.data.repository
 
-import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.wp.model.WorkoutModel
 
 interface WorkoutRepo {
     suspend fun getWorkoutDataList(): List<WorkoutModel>

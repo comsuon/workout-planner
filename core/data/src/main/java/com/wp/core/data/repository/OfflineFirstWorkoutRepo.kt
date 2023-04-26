@@ -1,14 +1,8 @@
-package com.comsuon.workoutplanner.repository
+package com.wp.core.data.repository
 
-import com.comsuon.workoutplanner.repository.db.WorkoutDB
-import com.comsuon.workoutplanner.repository.db.entities.ExerciseEntity
-import com.comsuon.workoutplanner.repository.db.entities.LoopEntity
-import com.comsuon.workoutplanner.repository.db.entities.WorkoutEntity
-import com.comsuon.workoutplanner.repository.db.pojo.WorkoutData
-import com.comsuon.workoutplanner.repository.db.pojo.toModel
-import com.comsuon.workoutplanner.view.WorkoutModel
+import com.comsuon.wp.model.WorkoutModel
 
-class WorkoutRepoImpl constructor(
+class OfflineFirstWorkoutRepo constructor(
     private val appDB: WorkoutDB
 ) : WorkoutRepo {
     override suspend fun getWorkoutDataList(): List<WorkoutModel> {

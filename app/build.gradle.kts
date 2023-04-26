@@ -1,18 +1,15 @@
+import com.google.samples.apps.wp.WpBuildType
+
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")//this one
-    id("dagger.hilt.android.plugin")
+    id("wp.android.application")
+    id("wp.android.application.compose")
+    id("wp.android.application.flavors")
+    id("wp.android.hilt")
 }
 
 android {
-    compileSdk = 30
-    buildToolsVersion = "30.0.3"
-
     defaultConfig {
         applicationId = "com.comsuon.workoutplanner"
-        minSdk = 21
-        targetSdk = 30
         versionCode = 1
         versionName = "1.0"
 
@@ -23,36 +20,31 @@ android {
     }
 
     buildTypes {
+        val debug by getting {
+            applicationIdSuffix = WpBuildType.DEBUG.applicationIdSuffix
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            applicationIdSuffix = WpBuildType.RELEASE.applicationIdSuffix
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+
+    packagingOptions {
+        resources {
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+        }
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-        useIR = true
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
-        kotlinCompilerVersion = "1.4.32"
-    }
+
 }
 
 dependencies {
 
-    //room
-    implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    kapt("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    implementation(project(":core:data"))
+    implementation(project(":core:model"))
 
     //navigation
     implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
