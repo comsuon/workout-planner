@@ -47,27 +47,23 @@ dependencies {
     implementation(project(":core:model"))
 
     //navigation
-    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:${rootProject.extra["nav_version"]}")
-    implementation("androidx.navigation:navigation-ui-ktx:${rootProject.extra["nav_version"]}")
-
+    implementation(libs.androidx.hilt.navigation.compose)
     //compose
-    implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
-    implementation("androidx.compose.material:material:${rootProject.extra["compose_version"]}")
-    implementation ("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_version"]}")
-    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta09")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha06")
-    implementation("androidx.activity:activity-compose:1.3.1")
-    implementation ("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
-    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation (libs.androidx.compose.foundation)
+    implementation (libs.androidx.compose.runtime)
+    implementation (libs.androidx.compose.bom)
 
 
     //Lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha03")
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
 
     //Test
     testImplementation("junit:junit:4.+")

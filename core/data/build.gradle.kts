@@ -4,7 +4,7 @@ plugins {
     id("wp.android.hilt")
 }
 android {
-    namespace = "com.wp.core.data"
+    namespace = "com.comsuon.wp.core.data"
 //    testOptions {
 //        unitTests {
 //            isIncludeAndroidResources = true

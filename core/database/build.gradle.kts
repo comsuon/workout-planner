@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.comsuon.wp.database"
+    namespace = "com.comsuon.wp.core.database"
 }
 
 dependencies {

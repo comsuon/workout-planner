@@ -33,11 +33,11 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 apply("wp.android.hilt")
             }
             extensions.configure<LibraryExtension> {
-                defaultConfig {
-                    testInstrumentationRunner =
-                        "com.google.samples.apps.wp.core.testing.NiaTestRunner"
-                }
-                configureGradleManagedDevices(this)
+//                defaultConfig {
+//                    testInstrumentationRunner =
+//                        "com.google.samples.apps.wp.core.testing.NiaTestRunner"
+//                }
+//                configureGradleManagedDevices(this)
             }
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")

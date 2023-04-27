@@ -3,10 +3,10 @@ package com.comsuon.workoutplanner
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.comsuon.workoutplanner.navigation.Screens
 import com.comsuon.workoutplanner.ui.theme.WorkoutPlannerTheme
 import com.comsuon.workoutplanner.view.editor.Editor
@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @ExperimentalMaterialApi
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +22,6 @@ class MainActivity : ComponentActivity() {
             WorkoutPlannerTheme {
                 val navController = rememberNavController()
                 val backStackEntry = navController.currentBackStackEntryAsState()
-
                 NavHost(
                     navController = navController,
                     startDestination = Screens.Home.name

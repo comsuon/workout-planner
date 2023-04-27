@@ -160,7 +160,7 @@ private fun onButtonDecrease(value: String, min: Int, step: Int): String {
 fun PreviewNumberRoller() {
     val value by remember { mutableStateOf("05") }
     val currentContext = LocalContext.current
-    WorkoutPlannerTheme(darkTheme = false) {
+    WorkoutPlannerTheme(darkTheme = true) {
         NumberRoller(
             isTimer = true,
             value = value,

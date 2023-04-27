@@ -1,11 +1,13 @@
-package com.comsuon.workoutplanner.ui.theme
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package com.comsuon.wp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -13,17 +15,17 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = Primary,
-    primaryVariant = P_Dark,
+    primaryContainer = P_Dark,
     secondary = Secondary,
     surface = P_Light,
     onSecondary = Color.White
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = P_Light,
-    primaryVariant = Primary,
+    primaryContainer = Primary,
     secondary = S_Light,
     surface = Surface_Light,
     onSecondary = Color.Black
@@ -50,7 +52,7 @@ fun WorkoutPlannerTheme(
     }
 
     MaterialTheme(
-        c = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content
@@ -68,13 +70,13 @@ val tfTextStyle by lazy {
 @Composable
 fun tfColors(
     textColor: Color = Color.White,
-    backgroundColor: Color = MaterialTheme.colors.primaryVariant,
+    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
     focusedIndicatorColor: Color = Color.Transparent,
     unfocusedIndicatorColor: Color = Color.Transparent,
     disabledIndicatorColor: Color = Color.Transparent
 ) = TextFieldDefaults.textFieldColors(
     textColor = textColor,
-    backgroundColor = backgroundColor,
+    containerColor = backgroundColor,
     focusedIndicatorColor = focusedIndicatorColor,
     unfocusedIndicatorColor = unfocusedIndicatorColor,
     disabledIndicatorColor = disabledIndicatorColor

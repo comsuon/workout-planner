@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -35,8 +37,6 @@ import androidx.navigation.NavController
 import com.comsuon.workoutplanner.R
 import com.comsuon.workoutplanner.ui.theme.tfColors
 import com.comsuon.workoutplanner.ui.theme.tfTextStyle
-import com.comsuon.workoutplanner.view.ExerciseModel
-import com.comsuon.workoutplanner.view.LoopModel
 import com.comsuon.workoutplanner.view.common.CircularLoading
 import com.comsuon.workoutplanner.view.home.WORKOUT_SAVE_KEY
 import com.comsuon.workoutplanner.viewmodel.EditorViewModel
@@ -44,7 +44,6 @@ import com.comsuon.workoutplanner.viewmodel.common.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@ExperimentalComposeUiApi
 @Composable
 fun Editor(navController: NavController, workoutId: String = "", viewModel: EditorViewModel) {
     val workoutModel by viewModel.workoutData.observeAsState()
@@ -66,7 +65,7 @@ fun Editor(navController: NavController, workoutId: String = "", viewModel: Edit
     }) {
         Box(
             modifier = Modifier
-                .background(color = MaterialTheme.colors.primaryVariant)
+                .background(color = MaterialTheme.colorScheme.primaryVariant)
                 .fillMaxSize()
         ) {
             LoopList(
