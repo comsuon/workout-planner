@@ -43,3 +43,5 @@ _sandbox
 
 # Android Studio captures folder
 captures/
+/app/demo/release/output-metadata.json
+/release-key.jks

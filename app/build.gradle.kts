@@ -8,6 +8,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("F:\\workspace\\workout-planner\\release-key.jks")
+            storePassword = "123456"
+            keyAlias = "eric"
+            keyPassword = "123456"
+        }
+    }
     defaultConfig {
         applicationId = "com.comsuon.workoutplanner"
         versionCode = 1
@@ -24,6 +32,7 @@ android {
             applicationIdSuffix = WpBuildType.DEBUG.applicationIdSuffix
         }
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             applicationIdSuffix = WpBuildType.RELEASE.applicationIdSuffix
             proguardFiles(
