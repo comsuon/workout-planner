@@ -3,44 +3,42 @@ package com.comsuon.workoutplanner.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.comsuon.workoutplanner.buildOptionArg
-import com.comsuon.workoutplanner.navigation.Screens.Editor
-import com.comsuon.workoutplanner.navigation.Screens.Home
-import com.comsuon.workoutplanner.navigation.Screens.Player
-import com.comsuon.workoutplanner.view.editor.Editor
-import com.comsuon.workoutplanner.view.home.Home
+import com.comsuon.wp.collections.navigation.collectionRoute
+import com.comsuon.wp.collections.ui.Home
+import com.comsuon.wp.feature.editor.navigation.editorExtras
+import com.comsuon.wp.feature.editor.navigation.editorRoute
+import com.comsuon.wp.feature.editor.views.Editor
 
 @Composable
 fun WPNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = Home.name
+    startDestination: String = collectionRoute
 ) {
     NavHost(
         navController = navController,
-        startDestination = Home.name
+        startDestination = collectionRoute
     ) {
 
-        composable(route = Home.name) {
+        composable(route = collectionRoute) {
             Home(navController = navController, viewModel = hiltViewModel())
         }
         composable(
-            route = "${Editor.name}${Editor.extras.buildOptionArg()}",
-            arguments = listOf(navArgument(Editor.extras) { defaultValue = "" })
+            route = "${editorRoute}${editorExtras.buildOptionArg()}",
+            arguments = listOf(navArgument(editorExtras) { defaultValue = "" })
         ) { backStackEntry ->
             Editor(
                 navController = navController,
-                workoutId = backStackEntry.arguments?.getString(Editor.extras)
+                workoutId = backStackEntry.arguments?.getString(editorExtras)
                     ?: "",
                 viewModel = hiltViewModel()
             )
         }
-        composable(route = Player.name) {}
+        composable(route = "player_route") {}
     }
 }

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">collections</string>
+    <string name="collection_title_workout_list">Workout List</string>
+    <string name="collection_btn_new_workout">New workout</string>
+</resources>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="editor_tf_hint_workout_name">Workout name</string>
+    <string name="editor_label_reps">Reps</string>
+    <string name="editor_btn_add_loop">Add loop</string>
+    <string name="editor_label_set_count">Sets</string>
+    <string name="editor_label_time">Time</string>
+    <string name="editor_second_label">sec</string>
+    <string name="editor_tf_hint_exercise_name">Exercise name</string>
+    <string name="editor_label_time_per_rep">Time per rep</string>
+    <string name="editor_label_total_time">Total time</string>
+    <string name="editor_label_auto_finished">Auto finished</string>
+    <string name="editor_label_skip_last_set">Skip last set</string>
+    <string name="editor_error_workout_name_missing">Please enter workout name!</string>
+    <string name="editor_error_empty_loop">Please add loop to workout!</string>
+    <string name="editor_error_empty_exercise_in_loop">Please make sure loop has at least one exercise!</string>
+    <string name="editor_error_saving_exercise">Please make sure all information is correct!</string>
+</resources>

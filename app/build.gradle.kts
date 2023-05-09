@@ -45,6 +45,10 @@ dependencies {
 
     implementation(project(":core:data"))
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
+    implementation(project(":core:ui"))
+    implementation(project(":feature:collections"))
+    implementation(project(":feature:editor"))
 
     //navigation
     implementation(libs.androidx.hilt.navigation.compose)
