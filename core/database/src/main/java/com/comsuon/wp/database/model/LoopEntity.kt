@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "loop")
 data class LoopEntity(
-    @PrimaryKey(autoGenerate = true) val loopId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val loopId: Long = 0,
     val workoutId: Int,
     val setCount: Int,
 )

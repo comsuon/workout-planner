@@ -20,11 +20,11 @@ class OfflineFirstWorkoutRepo @Inject constructor(
         return workoutDAO.getWorkoutDataList().map(WorkoutData::toModel)
     }
 
-    override suspend fun getWorkout(id: Int): WorkoutModel {
+    override suspend fun getWorkout(id: Long): WorkoutModel {
         return workoutDAO.getWorkoutById(id).toModel()
     }
 
-    override suspend fun deleteWorkout(id: Int) {
+    override suspend fun deleteWorkout(id: Long) {
         val workoutData = workoutDAO.getWorkoutById(id)
         workoutDAO.deleteWorkout(workoutData.workoutEntity)
     }
@@ -38,14 +38,14 @@ class OfflineFirstWorkoutRepo @Inject constructor(
             val loopId = loopDAO.insertLoop(loopEntity)
             val exerciseList = loopModel.exerciseList.map { exerciseModel ->
                 ExerciseEntity(
-                    loopId = loopId.toInt(),
+                    loopId = loopId,
                     exerciseName = exerciseModel.exerciseName,
                     isTime = exerciseModel.isTime,
                     timePerRep = exerciseModel.timePerRep,
                     repCount = exerciseModel.repCount,
                     autoFinished = exerciseModel.autoFinished,
                     skipLastSet = exerciseModel.skipLastSet,
-                    colorCode = exerciseModel.colorCode.toString()
+                    colorCode = exerciseModel.colorCode
                 )
             }
             exerciseDAO.insertAllExercise(exerciseList)

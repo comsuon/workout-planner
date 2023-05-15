@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comsuon.wp.core.domain.DeleteWorkoutUseCase
+import com.comsuon.wp.core.domain.GetWorkoutListUseCase
 import com.comsuon.wp.model.WorkoutModel
 import com.comsuon.wp.ui.model.Event
 import com.comsuon.wp.ui.model.UiState
-import com.wp.core.data.repository.WorkoutRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val getWorkoutListUseCase: GetWorkoutListUseCase,
+    private val deleteWorkoutUseCase: DeleteWorkoutUseCase
+) : ViewModel() {
+
     private val _workoutList = MutableLiveData<List<WorkoutModel>>()
     private val _uiState = MutableLiveData<Event<UiState>>()
     val workoutList: LiveData<List<WorkoutModel>> = _workoutList
@@ -30,22 +35,24 @@ class HomeViewModel @Inject constructor(val repo: WorkoutRepo) : ViewModel() {
         viewModelScope.launch {
             val workoutList = try {
                 withContext(Dispatchers.IO) {
-                    repo.getWorkoutDataList()
+                    getWorkoutListUseCase()
                 }
             } catch (e: Exception) {
                 null
             }
             if (workoutList.isNullOrEmpty().not()) {
                 _workoutList.postValue(workoutList)
+            } else {
+                _workoutList.postValue(emptyList())
             }
             _uiState.postValue(Event(UiState.Empty))
         }
     }
 
-    fun deleteWorkout(index: Int) {
+    fun deleteWorkout(index: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repo.deleteWorkout(index)
+                deleteWorkoutUseCase(index)
             }
             loadWorkoutList()
         }

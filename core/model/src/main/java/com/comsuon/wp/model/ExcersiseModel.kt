@@ -1,6 +1,7 @@
 package com.comsuon.wp.model
 
 data class ExerciseModel(
+    var exerciseId: Long = 0,
     var exerciseName: String = "",
     var repCount: Int = 1,
     var timePerRep: Int = 3,

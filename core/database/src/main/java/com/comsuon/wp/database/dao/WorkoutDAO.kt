@@ -13,13 +13,11 @@ interface WorkoutDAO {
 
     @Transaction
     @Query("SELECT * FROM workout WHERE id=:id")
-    fun getWorkoutById(id: Int): WorkoutData
+    fun getWorkoutById(id: Long): WorkoutData
 
-    @Transaction
     @Insert
     fun insertWorkout(workoutEntity: WorkoutEntity): Long
 
-    @Transaction
     @Delete
     fun deleteWorkout(workoutData: WorkoutEntity)
 }

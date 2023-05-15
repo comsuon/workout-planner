@@ -29,8 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.comsuon.wp.common.parseColor
 import com.comsuon.wp.model.ExerciseModel
 import com.comsuon.wp.ui.common.LabelledCheckbox
+import com.comsuon.wp.ui.common.ReorderLayout
 import com.comsuon.wp.ui.theme.Text_LightGrey
 import com.comsuon.wp.ui.theme.WorkoutPlannerTheme
 import com.comsuon.wp.ui.theme.tfColors
@@ -42,16 +44,20 @@ fun ExerciseView(
     modifier: Modifier = Modifier,
     exercise: ExerciseModel,
     onExerciseUpdate: (ExerciseModel) -> Unit,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
+    exerciseIndex: Int,
+    listSize: Int,
+    onMoveExercise: (Int, Int) -> Unit
 ) {
     ConstraintLayout(
         modifier = modifier.then(
             Modifier
                 .padding(horizontal = 8.dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(exercise.colorCode.parseColor() ?: Color.Transparent)
         )
     ) {
-        val (exerciseName, typeContainer, contentContainer, optionsContainer) = createRefs()
+        val (exerciseName, reorderContainer, typeContainer, contentContainer, optionsContainer) =
+            createRefs()
         TextField(
             modifier = Modifier
                 .constrainAs(exerciseName) {
@@ -79,6 +85,11 @@ fun ExerciseView(
             textStyle = tfTextStyle().merge(TextStyle(textAlign = TextAlign.Center)),
             onValueChange = { newValue -> onExerciseUpdate(exercise.copy(exerciseName = newValue)) }
         )
+        // Reorder items
+        ReorderLayout(modifier = Modifier.constrainAs(reorderContainer) {
+            top.linkTo(exerciseName.bottom, margin = 4.dp)
+            end.linkTo(parent.end, margin = 8.dp)
+        }, listSize = listSize, index = exerciseIndex, onMoveItem = onMoveExercise)
         //Reps - Time selector
         TypeSelector(modifier = Modifier.constrainAs(typeContainer) {
             top.linkTo(exerciseName.bottom)
@@ -229,10 +240,10 @@ fun ContentOptions(
 @Preview(name = "Exercise Preview")
 @Composable
 fun PreviewExerciseView() {
-    WorkoutPlannerTheme() {
-        ExerciseView(exercise = ExerciseModel(isTime = true), onExerciseUpdate = { }) {
-
-        }
+    WorkoutPlannerTheme(darkTheme = true) {
+        ExerciseView(exercise = ExerciseModel(isTime = true), onExerciseUpdate = { },
+            onDeleteItem = {}, onMoveExercise = { _, _ -> }, exerciseIndex = 1, listSize = 4
+        )
     }
 
 }

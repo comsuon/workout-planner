@@ -34,8 +34,7 @@ fun WPNavHost(
         ) { backStackEntry ->
             Editor(
                 navController = navController,
-                workoutId = backStackEntry.arguments?.getString(editorExtras)
-                    ?: "",
+                workoutId = backStackEntry.arguments?.getString(editorExtras)?.toLongOrNull() ?: 0L,
                 viewModel = hiltViewModel()
             )
         }

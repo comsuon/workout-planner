@@ -4,7 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comsuon.wp.common.getUniqueId
 import com.comsuon.wp.common.modifyValue
+import com.comsuon.wp.common.parseHexString
+import com.comsuon.wp.common.randomExerciseColor
+import com.comsuon.wp.core.domain.GetWorkoutUseCase
+import com.comsuon.wp.core.domain.SaveWorkoutUseCase
 import com.comsuon.wp.feature.editor.R
 import com.comsuon.wp.model.ExerciseModel
 import com.comsuon.wp.model.LoopModel
@@ -12,16 +17,21 @@ import com.comsuon.wp.model.WorkoutModel
 import com.comsuon.wp.ui.model.ErrorState
 import com.comsuon.wp.ui.model.Event
 import com.comsuon.wp.ui.model.UiState
-import com.wp.core.data.repository.WorkoutRepo
+import com.comsuon.wp.ui.theme.Blue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Collections
 import javax.inject.Inject
 
 @HiltViewModel
-class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewModel() {
+class EditorViewModel @Inject constructor(
+    private val getWorkoutByIdUseCase: GetWorkoutUseCase,
+    private val saveWorkoutUseCase: SaveWorkoutUseCase
+) : ViewModel() {
+
     //Workout data livedata
     private val _workoutData = MutableLiveData(WorkoutModel())
     val workoutData: LiveData<WorkoutModel> = _workoutData
@@ -34,11 +44,11 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     private val _scrollIndex = MutableLiveData<Event<Int>>()
     val scrollIndex: LiveData<Event<Int>> = _scrollIndex
 
-    fun loadWorkout(id: String) {
+    fun loadWorkout(id: Long) {
         viewModelScope.launch {
             val workOutModel = try {
                 withContext(Dispatchers.IO) {
-                    repo.getWorkout(id.toInt())
+                    getWorkoutByIdUseCase(id)
                 }
             } catch (e: Exception) {
                 null
@@ -57,13 +67,18 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
     //Jetpack compose is not compatible with mutable list
     fun addEmptyLoop() {
         val newLoopModel = LoopModel(
+            loopId = getUniqueId(),
             exerciseList = listOf(
-                ExerciseModel(),
                 ExerciseModel(
+                    exerciseId = getUniqueId(),
+                    colorCode = randomExerciseColor().parseHexString()
+                ),
+                ExerciseModel(
+                    exerciseId = getUniqueId(),
                     exerciseName = "Rest",
                     isTime = true,
                     timePerRep = 45,
-                    colorCode = ""
+                    colorCode = Blue.parseHexString()
                 )
             )
         )
@@ -88,7 +103,13 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
 
     fun addEmptyExercise(loopIndex: Int) {
         val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopIndex)?.copy() ?: LoopModel()
-        newLoopModel.exerciseList = newLoopModel.exerciseList + listOf(ExerciseModel())
+        newLoopModel.exerciseList =
+            newLoopModel.exerciseList + listOf(
+                ExerciseModel(
+                    exerciseId = getUniqueId(),
+                    colorCode = randomExerciseColor().parseHexString()
+                )
+            )
         setLoop(loopIndex, newLoopModel)
     }
 
@@ -107,6 +128,25 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
         }
         newLoopModel.exerciseList = newList
         setLoop(loopIndex, newLoopModel)
+    }
+
+    fun reorderLoop(fromIndex: Int, toIndex: Int) {
+        val newLoopList = _workoutData.value?.loopList?.toMutableList()?.also {
+            Collections.swap(it, fromIndex, toIndex)
+        }
+        newLoopList?.let {
+            _workoutData.modifyValue { copy(loopList = newLoopList) }
+        }
+    }
+
+    fun reorderExercise(loopId: Int, fromIndex: Int, toIndex: Int) {
+        val newLoopModel = _workoutData.value?.loopList?.getOrNull(loopId)?.copy()
+        newLoopModel?.also {
+            val newExerciseList = it.exerciseList.toMutableList()
+            Collections.swap(newExerciseList, fromIndex, toIndex)
+            newLoopModel.exerciseList = newExerciseList
+            setLoop(loopId, it)
+        }
     }
 
     fun saveWorkout() {
@@ -128,7 +168,7 @@ class EditorViewModel @Inject constructor(private val repo: WorkoutRepo) : ViewM
             delay(1500L)
             try {
                 withContext(Dispatchers.IO) {
-                    repo.saveWorkoutData(_workoutData.value!!)
+                    saveWorkoutUseCase(workoutData.value!!)
                 }
                 _uiState.postValue(Event(UiState.Success(SaveWorkoutSuccess)))
             } catch (e: Exception) {

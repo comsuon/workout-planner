@@ -1,7 +1,13 @@
 package com.comsuon.wp.feature.editor.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,48 +31,104 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.comsuon.wp.model.ExerciseModel
 import com.comsuon.wp.model.LoopModel
+import com.comsuon.wp.ui.common.ReorderLayout
+import com.comsuon.wp.ui.common.ReorderOrientation
 import com.comsuon.wp.ui.theme.Indigo100
 import com.comsuon.wp.feature.editor.R as editorR
 
 @Composable
 fun LoopView(
-    loopModel: LoopModel,
+    modifier: Modifier,
+    loopList: List<LoopModel>,
+    currentIndex: Int,
     onDeleteItem: (Int) -> Unit,
     onAddNewExercise: () -> Unit,
     onExerciseUpdated: (Int, ExerciseModel) -> Unit,
     onLoopUpdated: (LoopModel) -> Unit,
-    onDeleteLoop: () -> Unit
+    onDeleteLoop: () -> Unit,
+    onMoveLoop: (Int, Int) -> Unit,
+    onMoveExercise: (Int, Int) -> Unit
 ) {
+    val loopModel = loopList[currentIndex]
+
     Box(
-        Modifier
-            .fillMaxWidth(1f)
-            .padding(horizontal = 16.dp), contentAlignment = Alignment.TopCenter
+        modifier.fillMaxWidth(1f),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Card(
+        Box(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .padding(top = 8.dp)
                 .defaultMinSize(minHeight = 100.dp),
-            shape = RoundedCornerShape(4.dp),
-            elevation = cardElevation(defaultElevation = 4.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-            ExerciseList(
-                exerciseList = loopModel.exerciseList,
-                onDeleteItem = onDeleteItem,
-                onExerciseUpdated = onExerciseUpdated,
-                onNewExercise = onAddNewExercise
-            )
+            Card(
+                modifier = modifier.align(Alignment.TopCenter),
+                shape = RoundedCornerShape(4.dp),
+                elevation = cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                val exerciseList = loopModel.exerciseList
+                ExerciseList(
+                    exerciseList = exerciseList,
+                    onDeleteItem = onDeleteItem,
+                    onExerciseUpdated = onExerciseUpdated,
+                    onNewExercise = onAddNewExercise,
+                    onMoveExercise = onMoveExercise
+                )
+                ConstraintLayout(modifier = Modifier.fillMaxWidth(1f)) {
+                    val (newLoop, reorder) = createRefs()
+
+                    Box(modifier = Modifier
+                        .constrainAs(newLoop) {
+                            centerTo(parent)
+                        }
+                        .padding(
+                            top = if (exerciseList.isEmpty()) 64.dp else 8.dp,
+                            bottom = 8.dp
+                        )) {
+                        IconButton(
+                            modifier = Modifier
+
+                                .background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    shape = CircleShape
+                                )
+                                .size(36.dp),
+                            onClick = onAddNewExercise
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add new exercise",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                    ReorderLayout(
+                        modifier = Modifier.constrainAs(reorder) {
+                            end.linkTo(parent.end)
+                            top.linkTo(newLoop.top)
+                            bottom.linkTo(newLoop.bottom)
+                        },
+                        orientation = ReorderOrientation.HORIZONTAL,
+                        listSize = loopList.size,
+                        index = currentIndex,
+                        onMoveItem = onMoveLoop
+                    )
+                }
+            }
         }
         SetCount(setCount = loopModel.setCount) { newSetCount ->
             val newLoop = loopModel.copy(setCount = newSetCount)
             onLoopUpdated(newLoop)
         }
-        DeleteLoop(modifier = Modifier
-            .align(Alignment.TopEnd)
-            .padding(top = 8.dp), onDeleteLoop)
+        DeleteLoop(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp), onDeleteLoop
+        )
     }
 
 }
@@ -82,7 +144,10 @@ fun SetCount(setCount: Int = 3, onSetCountUpdated: (Int) -> Unit) {
             modifier = Modifier.padding(top = 4.dp),
             style = MaterialTheme.typography.bodySmall
         )
-        Row(modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)) {
+        Row(
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(
                 modifier = Modifier.size(32.dp),
                 onClick = {
@@ -136,7 +201,8 @@ fun ExerciseList(
     exerciseList: List<ExerciseModel>,
     onDeleteItem: (Int) -> Unit,
     onNewExercise: () -> Unit,
-    onExerciseUpdated: (Int, ExerciseModel) -> Unit
+    onExerciseUpdated: (Int, ExerciseModel) -> Unit,
+    onMoveExercise: (Int, Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(1f),
@@ -150,25 +216,10 @@ fun ExerciseList(
                     onDeleteItem = { onDeleteItem(index) },
                     onExerciseUpdate = { newItem ->
                         onExerciseUpdated(index, newItem)
-                    })
-            }
-        }
-        Box(
-            modifier = Modifier.padding(
-                top = if (exerciseList.isEmpty()) 64.dp else 8.dp,
-                bottom = 8.dp
-            )
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape)
-                    .size(36.dp),
-                onClick = onNewExercise
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add new exercise",
-                    tint = Color.White
+                    },
+                    onMoveExercise = onMoveExercise,
+                    exerciseIndex = index,
+                    listSize = exerciseList.size
                 )
             }
         }

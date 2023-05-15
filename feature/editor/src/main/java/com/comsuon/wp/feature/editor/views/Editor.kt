@@ -1,10 +1,15 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.comsuon.wp.feature.editor.views
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,8 +29,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -36,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -48,25 +54,30 @@ import com.comsuon.wp.feature.editor.viewmodel.EditorViewModel
 import com.comsuon.wp.model.ExerciseModel
 import com.comsuon.wp.model.LoopModel
 import com.comsuon.wp.ui.common.CircularLoading
+import com.comsuon.wp.ui.common.CustomTextField
 import com.comsuon.wp.ui.model.UiState
+import com.comsuon.wp.ui.theme.LocalBackgroundTheme
+import com.comsuon.wp.ui.theme.LocalTintTheme
 import com.comsuon.wp.ui.theme.WorkoutPlannerTheme
-import com.comsuon.wp.ui.theme.tfColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun Editor(navController: NavController, workoutId: String = "", viewModel: EditorViewModel) {
+fun Editor(navController: NavController, workoutId: Long = 0, viewModel: EditorViewModel) {
     val workoutModel by viewModel.workoutData.observeAsState()
     val uiState by viewModel.uiState.observeAsState()
     val scrollIndex by viewModel.scrollIndex.observeAsState()
     val context = LocalContext.current
+    val background = LocalBackgroundTheme.current.color
+
     LaunchedEffect(Unit) {
-        if (workoutId.isEmpty().not()) {
+        if (workoutId != 0L) {
             viewModel.loadWorkout(workoutId)
         }
     }
+
     WorkoutPlannerTheme(darkTheme = isSystemInDarkTheme()) {
         Scaffold(
             topBar = {
@@ -78,12 +89,14 @@ fun Editor(navController: NavController, workoutId: String = "", viewModel: Edit
                     onWorkoutNameChanged = viewModel::setWorkoutName,
                     onBackPressed = { navController.popBackStack() }
                 )
-            }
+            },
+            containerColor = background,
+            contentColor = contentColorFor(backgroundColor = background)
         ) { contentPadding ->
             Box(
                 modifier = Modifier
                     .padding(top = contentPadding.calculateTopPadding())
-                    .background(color = MaterialTheme.colorScheme.primaryContainer)
+                    .background(color = background)
                     .fillMaxSize()
             ) {
                 LoopList(
@@ -94,7 +107,9 @@ fun Editor(navController: NavController, workoutId: String = "", viewModel: Edit
                     onExerciseUpdated = viewModel::updateExercise,
                     onDeleteExercise = viewModel::deleteExercise,
                     onDeleteLoop = viewModel::deleteLoop,
-                    scrollIndex = scrollIndex?.getContentIfNotHandled()
+                    scrollIndex = scrollIndex?.getContentIfNotHandled(),
+                    onMoveExercise = viewModel::reorderExercise,
+                    onMoveLoop = viewModel::reorderLoop
                 )
                 when (uiState?.getContentIfNotHandled()) {
                     is UiState.Loading -> {
@@ -132,22 +147,28 @@ fun LoopList(
     onExerciseUpdated: (Int, Int, ExerciseModel) -> Unit,
     onDeleteExercise: (Int, Int) -> Unit,
     onAddEmptyExercise: (Int) -> Unit,
+    onMoveExercise: (Int, Int, Int) -> Unit,
+    onMoveLoop: (Int, Int) -> Unit,
     scrollIndex: Int?
 ) {
-    var listState = rememberLazyListState()
+    val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     LazyColumn(
         modifier = Modifier.fillMaxWidth(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         state = listState
     ) {
         //implement lazy column for loop list
         items(
             count = loopList.size,
-            key = { index -> loopList[index].toString() + index },
+            key = { index -> loopList[index].loopId },
             itemContent = { index ->
                 LoopView(
-                    loopModel = loopList[index],
+                    modifier = Modifier.animateItemPlacement(),
+                    loopList = loopList,
+                    currentIndex = index,
                     onLoopUpdated = { newLoop -> onLoopChange(index, newLoop) },
                     onExerciseUpdated = { exerciseIndex, exercise ->
                         onExerciseUpdated(
@@ -158,13 +179,20 @@ fun LoopList(
                     },
                     onDeleteItem = { exerciseIndex -> onDeleteExercise(index, exerciseIndex) },
                     onAddNewExercise = { onAddEmptyExercise(index) },
-                    onDeleteLoop = { onDeleteLoop(index) }
+                    onDeleteLoop = { onDeleteLoop(index) },
+                    onMoveExercise = { exerciseFrom, exerciseTo ->
+                        onMoveExercise(
+                            index,
+                            exerciseFrom, exerciseTo
+                        )
+                    },
+                    onMoveLoop = onMoveLoop
                 )
             })
         //Wrap the composable component in side item {} to build as item in LazyColumn
-        item (
+        item(
             key = "AddNewButton"
-            ) {
+        ) {
             AddNewLoopButton {
                 addEmptyLoop.invoke()
                 coroutineScope.launch {
@@ -188,8 +216,8 @@ fun AddNewLoopButton(addEmptyLoop: () -> Unit) {
         modifier = Modifier.padding(vertical = 8.dp),
         shape = RoundedCornerShape(corner = CornerSize(28.dp)),
         colors = buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.primary)
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ),
         elevation = buttonElevation(defaultElevation = 4.dp)
     ) {
@@ -213,27 +241,20 @@ fun EditorTopAppBar(
     onBackPressed: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val background = LocalBackgroundTheme.current.color
+    val tint = LocalTintTheme.current.iconTint ?: MaterialTheme.colorScheme.primary
     TopAppBar(
         title = {
-            TextField(
+            CustomTextField(
                 value = workoutName,
                 onValueChange = onWorkoutNameChanged,
                 modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                    )
+                    .clip(Shapes().extraLarge)
                     .onFocusChanged {
                         keyboardController?.hide()
                     },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.editor_tf_hint_workout_name),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                },
-                textStyle = MaterialTheme.typography.labelMedium,
-                singleLine = true,
-                colors = tfColors()
+                shapes = Shapes().extraLarge,
+                placeholderText = stringResource(R.string.editor_tf_hint_workout_name),
             )
         },
         navigationIcon = {
@@ -241,7 +262,7 @@ fun EditorTopAppBar(
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = tint
                 )
             }
         },
@@ -250,7 +271,7 @@ fun EditorTopAppBar(
                 Icon(
                     Icons.Filled.SaveAlt,
                     contentDescription = "Save Workout",
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = tint
                 )
             }
         },

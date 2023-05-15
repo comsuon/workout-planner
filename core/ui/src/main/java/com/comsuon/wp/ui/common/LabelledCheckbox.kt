@@ -9,19 +9,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun LabelledCheckbox(isChecked: Boolean, label: String, onCheckedChange: (Boolean) -> Unit) {
-    Row(modifier = Modifier
-        .padding(8.dp)
-        .clickable { onCheckedChange(!isChecked) }) {
+    Row(
+        modifier = Modifier
+            .clickable { onCheckedChange(!isChecked) },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Checkbox(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
             enabled = true,
-            colors = CheckboxDefaults.colors(uncheckedColor = MaterialTheme.colorScheme.primary)
+            colors = CheckboxDefaults.colors(
+                uncheckedColor = MaterialTheme.colorScheme.primary,
+                checkmarkColor = MaterialTheme.colorScheme.onPrimary
+            )
         )
         Text(
             text = label,
