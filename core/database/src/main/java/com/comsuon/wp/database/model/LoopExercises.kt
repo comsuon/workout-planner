@@ -16,7 +16,10 @@ data class LoopExercises(
 )
 
 fun LoopExercises.toModel(): LoopModel {
-    val loopModel = LoopModel(loopId = loop.loopId, setCount = loop.setCount)
+    val loopModel = LoopModel(
+        loopId = loop.loopId, setCount = loop.setCount,
+        indexInWorkout = loop.indexInWorkout
+    )
     val listExercises = listExercises.map { exerciseEntity ->
         ExerciseModel(
             exerciseId = exerciseEntity.exerciseId,
@@ -26,9 +29,10 @@ fun LoopExercises.toModel(): LoopModel {
             isTime = exerciseEntity.isTime,
             autoFinished = exerciseEntity.autoFinished,
             skipLastSet = exerciseEntity.skipLastSet,
+            indexInLoop = exerciseEntity.indexInLoop,
             colorCode = exerciseEntity.colorCode
         )
-    }
+    }.sortedBy { it.indexInLoop }
     loopModel.exerciseList = listExercises
     return loopModel
 }

@@ -27,8 +27,8 @@ private val DarkColorPalette = darkColorScheme(
     primaryContainer = P_Dark,
     secondary = Secondary,
     surface = P_Light,
-    onSecondary = Color.White,
-    onPrimaryContainer = Color.White,
+    onSecondary = White,
+    onPrimaryContainer = White,
     onSurface = Primary
 
 )
@@ -39,7 +39,7 @@ private val LightColorPalette = lightColorScheme(
     secondary = S_Light,
     surface = Surface_Light,
     onSecondary = Color.Black,
-    onPrimaryContainer = Text_Primary,
+    onPrimaryContainer = White,
     onSurface = P_Light
 
     /* Other default colors to override
@@ -82,8 +82,8 @@ fun WorkoutPlannerTheme(
 
     val tintTheme = when {
         androidTheme -> TintTheme()
-        !disableDynamicTheming && supportsDynamicTheming() -> TintTheme(colors.primary)
-        else -> TintTheme(colors.primary)
+        !disableDynamicTheming && supportsDynamicTheming() -> TintTheme(colors.onPrimaryContainer)
+        else -> TintTheme(colors.onPrimaryContainer)
     }
 
     // Composition locals

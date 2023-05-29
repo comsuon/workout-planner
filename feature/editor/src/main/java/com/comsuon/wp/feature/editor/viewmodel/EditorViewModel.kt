@@ -70,11 +70,9 @@ class EditorViewModel @Inject constructor(
             loopId = getUniqueId(),
             exerciseList = listOf(
                 ExerciseModel(
-                    exerciseId = getUniqueId(),
                     colorCode = randomExerciseColor().parseHexString()
                 ),
                 ExerciseModel(
-                    exerciseId = getUniqueId(),
                     exerciseName = "Rest",
                     isTime = true,
                     timePerRep = 45,

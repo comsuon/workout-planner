@@ -1,6 +1,5 @@
 package com.comsuon.wp.ui.common
 
-import android.view.RoundedCorner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,17 +11,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
@@ -30,21 +29,25 @@ fun CustomTextField(
     trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = "Placeholder",
     value: String = "",
-    onValueChange : (String) -> Unit = {},
+    onValueChange: (String) -> Unit = {},
     shapes: Shape = Shapes().small,
     fontSize: TextUnit = MaterialTheme.typography.bodyMedium.fontSize,
 ) {
-    var text by remember { mutableStateOf(value) }
+    val keyboardController = LocalSoftwareKeyboardController.current
     BasicTextField(modifier = modifier
+        .onFocusChanged {
+            if (it.isFocused.not()) {
+                keyboardController?.hide()
+            }
+        }
         .background(
             MaterialTheme.colorScheme.primaryContainer,
             shapes,
         )
         .fillMaxWidth(),
-        value = text,
+        value = value,
         onValueChange = {
-            text = it
-            onValueChange(text)
+            onValueChange(it)
         },
         singleLine = true,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -58,8 +61,11 @@ fun CustomTextField(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (leadingIcon != null) leadingIcon()
-                Box(Modifier.weight(1f).padding(horizontal = 12.dp, vertical = 8.dp)) {
-                    if (text.isEmpty()) Text(
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp, vertical = 8.dp)) {
+                    if (value.isEmpty()) Text(
                         placeholderText,
                         style = LocalTextStyle.current.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

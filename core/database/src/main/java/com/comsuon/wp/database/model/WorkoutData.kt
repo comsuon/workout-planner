@@ -19,7 +19,7 @@ fun WorkoutData.toModel(): WorkoutModel {
     return WorkoutModel(
         workoutEntity.id,
         workoutEntity.name,
-        loopList = listOfLoop.map(LoopExercises::toModel),
+        loopList = listOfLoop.map(LoopExercises::toModel).sortedBy { it.indexInWorkout },
         isFavourite = workoutEntity.isFavourite
     )
 }

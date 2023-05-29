@@ -15,7 +15,7 @@ interface WorkoutDAO {
     @Query("SELECT * FROM workout WHERE id=:id")
     fun getWorkoutById(id: Long): WorkoutData
 
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
     fun insertWorkout(workoutEntity: WorkoutEntity): Long
 
     @Delete

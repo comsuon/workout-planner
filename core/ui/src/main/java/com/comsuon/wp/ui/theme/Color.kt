@@ -24,6 +24,7 @@ val Text_Secondary = Color(0xFFfcfcfc)
 val Text_Subtitle = Color(0xff9e9e9e)
 val Text_LightGrey = Color(0xffe0e0e0)
 
+val White = Color(0xffffffff)
 val Red = Color(0xffe57373)
 val Purple = Color(0xffce93d8)
 val Indigo = Color(0xff7986cb)

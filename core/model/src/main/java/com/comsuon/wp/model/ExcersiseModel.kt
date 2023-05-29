@@ -8,5 +8,6 @@ data class ExerciseModel(
     var isTime: Boolean = false,
     var autoFinished: Boolean = true,
     var skipLastSet: Boolean = false,
+    var indexInLoop: Int = 0,
     var colorCode: String = ""
 )

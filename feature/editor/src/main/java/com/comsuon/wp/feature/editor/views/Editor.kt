@@ -81,7 +81,7 @@ fun Editor(navController: NavController, workoutId: Long = 0, viewModel: EditorV
     WorkoutPlannerTheme(darkTheme = isSystemInDarkTheme()) {
         Scaffold(
             topBar = {
-                EditorTopAppBar(
+                if (workoutModel != null) EditorTopAppBar(
                     workoutName = workoutModel?.workoutName ?: "",
                     onSaveClicked = {
                         viewModel.saveWorkout()
@@ -111,28 +111,28 @@ fun Editor(navController: NavController, workoutId: Long = 0, viewModel: EditorV
                     onMoveExercise = viewModel::reorderExercise,
                     onMoveLoop = viewModel::reorderLoop
                 )
-                when (uiState?.getContentIfNotHandled()) {
-                    is UiState.Loading -> {
-                        CircularLoading()
-                    }
-                    is UiState.Error<*> -> {
-                        val error = (uiState!!.peekContent() as UiState.Error<*>).error.errorCode
-                        Toast.makeText(
-                            context,
-                            stringResource(id = error),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    is UiState.Success<*> -> {
-                        Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set(WORKOUT_SAVE_KEY, true)
-                        navController.popBackStack()
-                    }
-                    else -> {
-                    }
-                }
+            }
+        }
+        when (uiState?.getContentIfNotHandled()) {
+            is UiState.Loading -> {
+                CircularLoading()
+            }
+            is UiState.Error<*> -> {
+                val error = (uiState!!.peekContent() as UiState.Error<*>).error.errorCode
+                Toast.makeText(
+                    context,
+                    stringResource(id = error),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            is UiState.Success<*> -> {
+                Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(WORKOUT_SAVE_KEY, true)
+                navController.popBackStack()
+            }
+            else -> {
             }
         }
     }
@@ -240,7 +240,6 @@ fun EditorTopAppBar(
     onSaveClicked: () -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
     val background = LocalBackgroundTheme.current.color
     val tint = LocalTintTheme.current.iconTint ?: MaterialTheme.colorScheme.primary
     TopAppBar(
@@ -249,10 +248,7 @@ fun EditorTopAppBar(
                 value = workoutName,
                 onValueChange = onWorkoutNameChanged,
                 modifier = Modifier
-                    .clip(Shapes().extraLarge)
-                    .onFocusChanged {
-                        keyboardController?.hide()
-                    },
+                    .clip(Shapes().extraLarge),
                 shapes = Shapes().extraLarge,
                 placeholderText = stringResource(R.string.editor_tf_hint_workout_name),
             )
